@@ -24,6 +24,7 @@ export class SeedService extends BaseService<SeedEntity> {
           delimiter:';'
         }).fromFile(csvFilePath)
         console.log(users)
+
       });
     }
   }

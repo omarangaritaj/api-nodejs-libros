@@ -11,7 +11,7 @@ export class BookController {
 
   async getProducts(req: Request, res: Response) {
     try {
-      // const data = await this.bookService.findAllProducts();
+      // const data = await this.bookService.findAllBooks();
       // if (data.length === 0) {
       //   return this.httpResponse.NotFound(res, "No existe dato");
       // }
@@ -25,7 +25,7 @@ export class BookController {
   async getProductById(req: Request, res: Response) {
     const { id } = req.params;
     try {
-      const data = await this.bookService.findProductById(id);
+      const data = await this.bookService.findBookById(id);
       if (!data) {
         return this.httpResponse.NotFound(res, "No existe dato");
       }
@@ -40,7 +40,7 @@ export class BookController {
     const { search } = req.query;
     try {
       if (search !== undefined) {
-        const data = await this.bookService.findProductsByName(search);
+        const data = await this.bookService.findBookByName(search);
         if (!data) {
           return this.httpResponse.NotFound(res, "No existe dato");
         }
@@ -53,7 +53,7 @@ export class BookController {
   }
   async createProduct(req: Request, res: Response) {
     try {
-      const data = await this.bookService.createProduct(req.body);
+      const data = await this.bookService.createBook(req.body);
       if (!data) {
         return this.httpResponse.NotFound(res, "No existe dato");
       }
@@ -66,7 +66,7 @@ export class BookController {
   async updateProduct(req: Request, res: Response) {
     const { id } = req.params;
     try {
-      const data: UpdateResult = await this.bookService.updateProduct(
+      const data: UpdateResult = await this.bookService.updateBook(
         id,
         req.body
       );
@@ -83,7 +83,7 @@ export class BookController {
   async deleteProduct(req: Request, res: Response) {
     const { id } = req.params;
     try {
-      const data: DeleteResult = await this.bookService.deleteProduct(id);
+      const data: DeleteResult = await this.bookService.deleteBook(id);
       res.status(200).json(data);
       if (!data.affected) {
         return this.httpResponse.NotFound(res, "Hay un error en borrar");

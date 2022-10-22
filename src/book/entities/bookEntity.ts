@@ -1,15 +1,19 @@
-import { Column, Entity, ManyToOne, JoinColumn, OneToMany } from "typeorm";
-import { BaseEntity } from "../../config/base.entity";
+import mongoose, {Schema} from 'mongoose';
+import {IBook} from "../IBook";
 
-@Entity({ name: "product" })
-export class BookEntity extends BaseEntity {
-  @Column()
-  productName!: string;
+const BookSchema: Schema = new Schema(
+  {
+    ISBN: {type: String, required: true, unique: true},
+    'Book-Title': {type: String, required: true},
+    'Book-Author': {type: String, required: true},
+    'Year-Of-Publication': {type: String, required: true},
+    Publisher: {type: String, required: true},
+    'Image-URL-S': {type: String, required: true},
+    'Image-URL-M': {type: String, required: true},
+    'Image-URL-L': {type: String, required: true},
+  },
+  {timestamps: true}
+);
 
-  @Column()
-  description!: string;
+export default mongoose.model<IBook>('Book', BookSchema);
 
-  @Column()
-  price!: number;
-
-}

@@ -23,7 +23,7 @@ export class ProductRouter extends BaseRouter<
       "/book/create",
       (req, res, next) => [
         this.middleware.checkAdminRole(req, res, next),
-        this.middleware.productValidator(req, res, next),
+        this.middleware.bookValidator(req, res, next),
       ],
       (req, res) => this.controller.createProduct(req, res)
     );

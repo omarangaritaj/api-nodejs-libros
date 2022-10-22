@@ -10,5 +10,4 @@ export class BookDTO extends BaseDTO {
 
   @IsNotEmpty()
   price!: number;
-
 }

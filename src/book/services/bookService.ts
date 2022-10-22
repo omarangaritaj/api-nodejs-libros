@@ -1,29 +1,29 @@
-import { Request } from "express";
 import QueryString from "qs";
 import { DeleteResult, UpdateResult } from "typeorm";
-import { BaseService } from "../../config/base.service";
 import { BookDTO } from "../dto/bookDTO";
 
-import { BookEntity } from "../entities/bookEntity";
-export class BookService extends BaseService<BookEntity> {
+import  BookEntity  from "../entities/bookEntity";
+import {IBook} from "../IBook";
+
+
+export class BookService  {
   constructor() {
-    super(BookEntity);
   }
 
-  async findAllProducts(): Promise<BookEntity[]> {
-    return (await this.execRepository).find();
+  async findAllBooks(): Promise<IBook[]> {
+    return await this.execRepository.find();
   }
-  async findProductById(id: string): Promise<BookEntity | null> {
+  async findBookById(id: string): Promise<IBook | null> {
     return (await this.execRepository).findOneBy({ id });
   }
 
-  async findProductsByName(
+  async findBookByName(
     productName:
       | string
       | string[]
       | QueryString.ParsedQs
       | QueryString.ParsedQs[]
-  ): Promise<BookEntity[] | []> {
+  ): Promise<IBook[] | []> {
     return (await this.execRepository)
       .createQueryBuilder("products")
       .where("products.productName like :productName", {
@@ -32,13 +32,13 @@ export class BookService extends BaseService<BookEntity> {
       .getMany();
   }
 
-  async createProduct(body: BookDTO): Promise<BookEntity> {
-    return (await this.execRepository).save(body);
+  async createBook(body: BookDTO): Promise<IBook> {
+    return await BookEntity.create(body)
   }
-  async deleteProduct(id: string): Promise<DeleteResult> {
+  async deleteBook(id: string): Promise<DeleteResult> {
     return (await this.execRepository).delete({ id });
   }
-  async updateProduct(
+  async updateBook(
     id: string,
     infoUpdate: BookDTO
   ): Promise<UpdateResult> {
