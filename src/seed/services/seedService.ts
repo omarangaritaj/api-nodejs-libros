@@ -4,42 +4,37 @@ import {parse} from 'csv-parse';
 
 import {BaseService} from "../../config/base.service";
 import {SeedEntity} from "../entities/category.entity";
-
-type WorldCity = {
-  name: string;
-  country: string;
-  subCountry: string;
-  geoNameId: number;
-};
+import axios from "axios";
+import CSVToJSON from 'csvtojson'
 
 export class SeedService extends BaseService<SeedEntity> {
   constructor() {
     super(SeedEntity);
   }
 
-  loadCsvFile(): void {
-    const csvFilePath = path.resolve(__dirname, '../books.csv');
-    const headers = ["ISBN", "Book-Title", "Book-Author", "Year-Of-Publication", "Publisher", "Image-URL-S", "Image-URL-M", "Image-URL-L"];
-    const fileContent = fs.readFileSync(csvFilePath, {encoding: 'utf-8'});
+  private async downloadCsvFile() {
+    const csvUrl = this.getEnvironment('BOOK_URL')
+    const csvFilePath = path.resolve(__dirname, 'books.csv');
+    if (csvUrl != null) {
+      const {data} = await axios.get(csvUrl)
 
-    parse(fileContent, {
-      delimiter: ';',
-      columns: headers,
-    }, (error, result: WorldCity[]) => {
-      if (error) {
-        console.error(error);
-      }
-      console.log("Result", result);
-      return result
-    });
+      fs.writeFile(csvFilePath, data, async (err) => {
+        if (err) return false;
+        const users = await CSVToJSON({
+          delimiter:';'
+        }).fromFile(csvFilePath)
+        console.log(users)
+      });
+    }
   }
+
 
   async findCategoryById(id: string): Promise<SeedEntity | null> {
     return (await this.execRepository).findOneBy({id});
   }
 
-  createSeed(): [String | null] {
-    this.loadCsvFile()
+  async createSeed() {
+    const data = await this.downloadCsvFile()
     return ['']
   }
 }

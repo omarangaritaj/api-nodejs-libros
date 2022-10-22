@@ -9,8 +9,8 @@ export abstract class ConfigServer {
     });
   }
 
-  public getEnvironment(k: string): string | undefined {
-    return process.env[k];
+  public getEnvironment(k: string): string {
+    return process.env[k] || '';
   }
 
   public getNumberEnv(k: string): number {
