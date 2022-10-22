@@ -6,7 +6,7 @@ import { UserRouter } from "./user/user.router";
 import { ConfigServer } from "./config/config";
 import { ProductRouter } from "./product/product.router";
 import { CustomerRouter } from "./customer/customer.router";
-import { CategoryRouter } from "./category/category.router";
+import { CategoryRouter } from "./seed/category.router";
 import { DataSource } from "typeorm";
 
 
@@ -35,7 +35,6 @@ class ServerBootstrap extends ConfigServer {
 
   routers(): Array<express.Router> {
     return [
-      new UserRouter().router,
       new ProductRouter().router,
       new CustomerRouter().router,
       new CategoryRouter().router,
