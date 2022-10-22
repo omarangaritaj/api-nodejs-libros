@@ -2,10 +2,9 @@ import "reflect-metadata";
 import express from "express";
 import morgan from "morgan";
 import cors from "cors";
-import { ConfigServer } from "./config/config";
-import { ProductRouter } from "./product/product.router";
-import { SeedRouter } from "./seed/seedRouter";
-import { DataSource } from "typeorm";
+import {ConfigServer} from "./config/config";
+import {ProductRouter} from "./product/product.router";
+import {SeedRouter} from "./seed/seedRouter";
 
 
 class ServerBootstrap extends ConfigServer {
@@ -15,7 +14,7 @@ class ServerBootstrap extends ConfigServer {
   constructor() {
     super();
     this.app.use(express.json());
-    this.app.use(express.urlencoded({ extended: true }));
+    this.app.use(express.urlencoded({extended: true}));
     this.dbConnect();
     this.app.use(morgan("dev"));
 
@@ -38,14 +37,8 @@ class ServerBootstrap extends ConfigServer {
     ];
   }
 
-  async dbConnect(): Promise<DataSource | void> {
-    return this.initConnect
-      .then(() => {
-        console.log("Connect Success");
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+  async dbConnect(){
+    return await this.initConnect()
   }
 
   public listen() {

@@ -10,11 +10,11 @@ export class ProductController {
   ) {}
   async getProducts(req: Request, res: Response) {
     try {
-      const data = await this.productService.findAllProducts();
-      if (data.length === 0) {
-        return this.httpResponse.NotFound(res, "No existe dato");
-      }
-      return this.httpResponse.Ok(res, data);
+      // const data = await this.productService.findAllProducts();
+      // if (data.length === 0) {
+      //   return this.httpResponse.NotFound(res, "No existe dato");
+      // }
+      return this.httpResponse.Ok(res, {ok:true});
     } catch (e) {
       console.error(e);
       return this.httpResponse.Error(res, e);

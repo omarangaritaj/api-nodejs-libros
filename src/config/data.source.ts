@@ -1,6 +1,5 @@
-import { DataSource, DataSourceOptions } from "typeorm";
 import * as dotenv from "dotenv";
-import { SnakeNamingStrategy } from "typeorm-naming-strategies";
+import mongoose from "mongoose";
 
 dotenv.config({
   path:
@@ -9,19 +8,27 @@ dotenv.config({
       : ".env",
 });
 
-const Config: DataSourceOptions = {
-  type: "mysql",
+const Config = {
   host: process.env.DB_HOST,
   port: Number(process.env.DB_PORT),
   username: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
-  entities: [__dirname + "/../**/*.entity{.ts,.js}"],
-  migrations: [__dirname + "/../migrations/*{.ts,.js}"],
-  synchronize: false,
-  migrationsRun: true,
-  logging: false,
-  namingStrategy: new SnakeNamingStrategy(),
 };
 
-export const AppDataSource: DataSource = new DataSource(Config);
+
+export const dbConnection = async (): Promise<any> => {
+  try {
+    await mongoose.connect(`mongodb://${Config.host}:${Config.port}/${Config.database}`,
+      {
+        // useCreateIndex: true,
+        // useFindAndModify: false,
+        // useNewUrlParser: true,
+        // useUnifiedTopology: true,
+      })
+    console.log('connected to database')
+  } catch (error) {
+    console.log(error);
+    throw new Error("Trobble with a Data Base connection");
+  }
+}

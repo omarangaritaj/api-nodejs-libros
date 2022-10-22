@@ -1,15 +1,8 @@
 import * as dotenv from "dotenv";
-import {
-  Connection,
-  ConnectionOptions,
-  createConnection,
-  DataSource,
-} from "typeorm";
-import { SnakeNamingStrategy } from "typeorm-naming-strategies";
-import { AppDataSource } from "./data.source";
+import {dbConnection} from "./data.source";
 
 export abstract class ConfigServer {
-  constructor() {
+  protected constructor() {
     const nodeNameEnv = this.createPathEnv(this.nodeEnv);
     dotenv.config({
       path: nodeNameEnv,
@@ -29,7 +22,7 @@ export abstract class ConfigServer {
   }
 
   public createPathEnv(path: string): string {
-    const arrEnv: Array<string> = ["env"]; //['hola', 'mundo'] => 'hola.mundo'
+    const arrEnv: Array<string> = ["env"];
 
     if (path.length > 0) {
       const stringToArray = path.split(".");
@@ -38,7 +31,7 @@ export abstract class ConfigServer {
     return "." + arrEnv.join(".");
   }
 
-  get initConnect(): Promise<DataSource> {
-    return AppDataSource.initialize();
+  public initConnect() {
+    return dbConnection();
   }
 }
