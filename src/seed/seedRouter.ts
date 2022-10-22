@@ -11,7 +11,7 @@ export class SeedRouter extends BaseRouter<
 
   routes(): void {
     this.router.get("/seed", (req, res) =>
-      this.controller.getSeed(req, res)
+      this.controller.createSeed(req, res)
     );
   }
 }

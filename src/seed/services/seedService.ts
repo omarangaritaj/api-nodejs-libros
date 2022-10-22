@@ -23,13 +23,14 @@ export class SeedService extends BaseService<SeedEntity> {
     const fileContent = fs.readFileSync(csvFilePath, {encoding: 'utf-8'});
 
     parse(fileContent, {
-      delimiter: ',',
+      delimiter: ';',
       columns: headers,
     }, (error, result: WorldCity[]) => {
       if (error) {
         console.error(error);
       }
       console.log("Result", result);
+      return result
     });
   }
 
@@ -38,6 +39,7 @@ export class SeedService extends BaseService<SeedEntity> {
   }
 
   createSeed(): [String | null] {
+    this.loadCsvFile()
     return ['']
   }
 }
