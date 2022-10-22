@@ -14,16 +14,13 @@ Para instalar el proyecto debe asegurarse de tener NodeJs en el equipo y ejecuta
 yarn install 
 ```
 
-Dependencias de desarrollo necesarias:
-
-```
-yarn add -D @types/cors @types/express @types/morgan concurrently nodemon
-```
-
-## Instalación de la semilla
+## Cargue de los datos semilla
 
 Deberá acceder al endpoint por el verbo GET para cargar la información dentro de la base de datos:
 ```
 api/seed
 ```
+_Debido a la cantidad de registros a insertar es posible que tome algo de tiempo en la inserción._
+
+
 

@@ -9,7 +9,7 @@ export class BookController {
     private readonly httpResponse: HttpResponse = new HttpResponse()
   ) {}
 
-  async getProducts(req: Request, res: Response) {
+  async getBook(req: Request, res: Response) {
     try {
       // const data = await this.bookService.findAllBooks();
       // if (data.length === 0) {
@@ -22,7 +22,7 @@ export class BookController {
     }
   }
 
-  async getProductById(req: Request, res: Response) {
+  async getBookById(req: Request, res: Response) {
     const { id } = req.params;
     try {
       const data = await this.bookService.findBookById(id);
@@ -36,7 +36,7 @@ export class BookController {
     }
   }
 
-  async findProductsByName(req: Request, res: Response) {
+  async findBookByName(req: Request, res: Response) {
     const { search } = req.query;
     try {
       if (search !== undefined) {
@@ -51,7 +51,7 @@ export class BookController {
       return this.httpResponse.Error(res, e);
     }
   }
-  async createProduct(req: Request, res: Response) {
+  async createBook(req: Request, res: Response) {
     try {
       const data = await this.bookService.createBook(req.body);
       if (!data) {
@@ -63,7 +63,7 @@ export class BookController {
       return this.httpResponse.Error(res, e);
     }
   }
-  async updateProduct(req: Request, res: Response) {
+  async updateBook(req: Request, res: Response) {
     const { id } = req.params;
     try {
       const data: UpdateResult = await this.bookService.updateBook(
@@ -80,14 +80,15 @@ export class BookController {
       return this.httpResponse.Error(res, e);
     }
   }
-  async deleteProduct(req: Request, res: Response) {
+  async deleteBook(req: Request, res: Response) {
     const { id } = req.params;
     try {
-      const data: DeleteResult = await this.bookService.deleteBook(id);
+      // const data: DeleteResult = await this.bookService.deleteBook(id);
+      const data = {}
       res.status(200).json(data);
-      if (!data.affected) {
-        return this.httpResponse.NotFound(res, "Hay un error en borrar");
-      }
+      // if (!data.affected) {
+      //   return this.httpResponse.NotFound(res, "Hay un error en borrar");
+      // }
       return this.httpResponse.Ok(res, data);
     } catch (e) {
       console.error(e);
