@@ -2,16 +2,16 @@ import { validate } from "class-validator";
 import { NextFunction, Request, Response } from "express";
 import { SharedMiddleware } from "../../shared/middlewares/shared.middleware";
 
-import { ProductDTO } from "../dto/product.dto";
+import { BookDTO } from "../dto/bookDTO";
 
-export class ProductMiddleware extends SharedMiddleware {
+export class BookMiddleware extends SharedMiddleware {
   constructor() {
     super();
   }
   productValidator(req: Request, res: Response, next: NextFunction) {
     const { productName, description, category, price } = req.body;
 
-    const valid = new ProductDTO();
+    const valid = new BookDTO();
     valid.productName = productName;
     valid.description = description;
     valid.price = price;

@@ -1,12 +1,12 @@
 import { BaseRouter } from "../shared/router/router";
-import { ProductController } from "./controllers/product.controller";
-import { ProductMiddleware } from "./middlewares/product.middleware";
+import { BookController } from "./controllers/bookController";
+import { BookMiddleware } from "./middlewares/bookMiddleware";
 export class ProductRouter extends BaseRouter<
-  ProductController,
-  ProductMiddleware
+  BookController,
+  BookMiddleware
 > {
   constructor() {
-    super(ProductController, ProductMiddleware);
+    super(BookController, BookMiddleware);
   }
 
   routes(): void {

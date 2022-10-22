@@ -1,7 +1,7 @@
 import { IsNotEmpty } from "class-validator";
 import { BaseDTO } from "../../config/base.dto";
 
-export class ProductDTO extends BaseDTO {
+export class BookDTO extends BaseDTO {
   @IsNotEmpty()
   productName!: string;
 

@@ -3,7 +3,7 @@ import express from "express";
 import morgan from "morgan";
 import cors from "cors";
 import {ConfigServer} from "./config/config";
-import {ProductRouter} from "./product/product.router";
+import {ProductRouter} from "./book/product.router";
 import {SeedRouter} from "./seed/seedRouter";
 
 

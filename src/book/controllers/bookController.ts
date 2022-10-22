@@ -1,16 +1,17 @@
 import { Request, Response } from "express";
 import { DeleteResult, UpdateResult } from "typeorm";
 import { HttpResponse } from "../../shared/response/http.response";
-import { ProductService } from "../services/product.service";
+import { BookService } from "../services/bookService";
 
-export class ProductController {
+export class BookController {
   constructor(
-    private readonly productService: ProductService = new ProductService(),
+    private readonly bookService: BookService = new BookService(),
     private readonly httpResponse: HttpResponse = new HttpResponse()
   ) {}
+
   async getProducts(req: Request, res: Response) {
     try {
-      // const data = await this.productService.findAllProducts();
+      // const data = await this.bookService.findAllProducts();
       // if (data.length === 0) {
       //   return this.httpResponse.NotFound(res, "No existe dato");
       // }
@@ -20,10 +21,11 @@ export class ProductController {
       return this.httpResponse.Error(res, e);
     }
   }
+
   async getProductById(req: Request, res: Response) {
     const { id } = req.params;
     try {
-      const data = await this.productService.findProductById(id);
+      const data = await this.bookService.findProductById(id);
       if (!data) {
         return this.httpResponse.NotFound(res, "No existe dato");
       }
@@ -38,7 +40,7 @@ export class ProductController {
     const { search } = req.query;
     try {
       if (search !== undefined) {
-        const data = await this.productService.findProductsByName(search);
+        const data = await this.bookService.findProductsByName(search);
         if (!data) {
           return this.httpResponse.NotFound(res, "No existe dato");
         }
@@ -51,7 +53,7 @@ export class ProductController {
   }
   async createProduct(req: Request, res: Response) {
     try {
-      const data = await this.productService.createProduct(req.body);
+      const data = await this.bookService.createProduct(req.body);
       if (!data) {
         return this.httpResponse.NotFound(res, "No existe dato");
       }
@@ -64,7 +66,7 @@ export class ProductController {
   async updateProduct(req: Request, res: Response) {
     const { id } = req.params;
     try {
-      const data: UpdateResult = await this.productService.updateProduct(
+      const data: UpdateResult = await this.bookService.updateProduct(
         id,
         req.body
       );
@@ -81,7 +83,7 @@ export class ProductController {
   async deleteProduct(req: Request, res: Response) {
     const { id } = req.params;
     try {
-      const data: DeleteResult = await this.productService.deleteProduct(id);
+      const data: DeleteResult = await this.bookService.deleteProduct(id);
       res.status(200).json(data);
       if (!data.affected) {
         return this.httpResponse.NotFound(res, "Hay un error en borrar");
