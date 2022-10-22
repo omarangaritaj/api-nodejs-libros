@@ -5,6 +5,13 @@ import {parse} from 'csv-parse';
 import {BaseService} from "../../config/base.service";
 import {SeedEntity} from "../entities/category.entity";
 
+type WorldCity = {
+  name: string;
+  country: string;
+  subCountry: string;
+  geoNameId: number;
+};
+
 export class SeedService extends BaseService<SeedEntity> {
   constructor() {
     super(SeedEntity);

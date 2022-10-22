@@ -1,6 +1,5 @@
 import { IsNotEmpty } from "class-validator";
 import { BaseDTO } from "../../config/base.dto";
-import { CategoryEntity } from "../../seed/entities/category.entity";
 
 export class ProductDTO extends BaseDTO {
   @IsNotEmpty()
@@ -12,6 +11,4 @@ export class ProductDTO extends BaseDTO {
   @IsNotEmpty()
   price!: number;
 
-  @IsNotEmpty()
-  category!: CategoryEntity;
 }

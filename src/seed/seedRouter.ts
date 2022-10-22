@@ -1,8 +1,12 @@
 import { BaseRouter } from "../shared/router/router";
 import { SeedController } from "./controllers/seedController";
-export class CategoryRouter extends BaseRouter<SeedController, SeedController> {
+import { SeddMiddleware } from "./middlewares/seddMiddleware";
+export class SeedRouter extends BaseRouter<
+  SeedController,
+  SeddMiddleware
+> {
   constructor() {
-    // super(SeedController);
+    super(SeedController, SeddMiddleware);
   }
 
   routes(): void {

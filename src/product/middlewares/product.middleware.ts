@@ -14,7 +14,6 @@ export class ProductMiddleware extends SharedMiddleware {
     const valid = new ProductDTO();
     valid.productName = productName;
     valid.description = description;
-    valid.category = category;
     valid.price = price;
 
     validate(valid).then((err) => {

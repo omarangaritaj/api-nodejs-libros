@@ -21,7 +21,6 @@ export class ProductRouter extends BaseRouter<
     );
     this.router.post(
       "/products/create",
-      this.middleware.passAuth("jwt"),
       (req, res, next) => [
         this.middleware.checkAdminRole(req, res, next),
         this.middleware.productValidator(req, res, next),
@@ -30,13 +29,11 @@ export class ProductRouter extends BaseRouter<
     );
     this.router.put(
       "/products/update/:id",
-      this.middleware.passAuth("jwt"),
       (req, res, next) => [this.middleware.checkAdminRole(req, res, next)],
       (req, res) => this.controller.updateProduct(req, res)
     );
     this.router.delete(
       "products/delete/:id",
-      this.middleware.passAuth("jwt"),
       (req, res, next) => [this.middleware.checkAdminRole(req, res, next)],
       (req, res) => this.controller.deleteProduct(req, res)
     );
