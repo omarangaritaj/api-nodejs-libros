@@ -21,21 +21,21 @@ export class BookRouter extends BaseRouter<BookController,
       (req: Request, res: Response) => this.controller.getBooks(req, res)
     );
 
-    this.router.get("/book/:id",
-      [
-        check('id', 'Debe ser un ID válido').isMongoId(),
-        this.middleware.errorValidation,
-      ],
-      (req: Request, res: Response) =>this.controller.getBookById(req, res)
-    );
-
     this.router.get("/book/search",
       [
         check('limit', 'Un valor entre 1 y 50').isInt({min: 1, max: 50}),
         check('offset', 'Un valor mayor a 0').isInt({min: 0}),
         this.middleware.errorValidation,
       ],
-      this.controller.findBookByName
+      (req: Request, res: Response) =>this.controller.findBookByQuery(req, res)
+    );
+
+    this.router.get("/book/:id",
+      [
+        check('id', 'Debe ser un ID válido').isMongoId(),
+        this.middleware.errorValidation,
+      ],
+      (req: Request, res: Response) =>this.controller.getBookById(req, res)
     );
 
     this.router.post(

@@ -18,7 +18,7 @@ export class BookController {
     }
     try {
       const data = await this.bookService.findAllBooks(queryData);
-      if (data.length === 0) {
+      if (data.total === 0) {
         return this.httpResponse.NotFound(res, "No hay libros. Ejecute '/api/seed'");
       }
       return this.httpResponse.Ok(res, data);
@@ -42,16 +42,20 @@ export class BookController {
     }
   }
 
-  async findBookByName(req: Request, res: Response) {
-    const {search} = req.query;
+  async findBookByQuery(req: Request, res: Response) {
+    const {offset, limit, query} = req.query
     try {
-      if (search !== undefined) {
-        const data = await this.bookService.findBookByQuery(search);
-        if (!data) {
-          return this.httpResponse.NotFound(res, "No existe dato");
-        }
-        return this.httpResponse.Ok(res, data);
+
+      const queryData =  <IPagination>{
+        limit: Number(limit),
+        offset: Number(offset),
+        bookQuery: query
       }
+      const data = await this.bookService.findBookByQuery(queryData);
+      if (!data) {
+        return this.httpResponse.NotFound(res, "No existe dato");
+      }
+      return this.httpResponse.Ok(res, data);
     } catch (e) {
       console.error(e);
       return this.httpResponse.Error(res, e);

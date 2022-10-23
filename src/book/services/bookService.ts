@@ -1,4 +1,3 @@
-import QueryString from "qs";
 import {BookDTO} from "../dto/bookDTO";
 
 import BookEntity from "../entities/bookEntity";
@@ -12,32 +11,42 @@ export class BookService extends BaseService<BookDTO> {
     super(BookEntity);
   }
 
-  async findAllBooks({offset, limit}: IPagination): Promise<IBook[]> {
-    return BookEntity.find()
-      .skip(offset)
-      .limit(limit)
-      .select(["-__v",]);
+  async findAllBooks({offset, limit}: IPagination) {
+
+    const [records, total] = await Promise.all([
+      BookEntity.find()
+        .skip(offset)
+        .limit(limit)
+        .select(["-__v",]),
+      BookEntity.find().count()
+    ])
+    return {records, total}
   }
 
-  async findBookById(id: string): Promise<IBook | null> {
-    return BookEntity.findOne({_id: id}).select(["-__v",]);
+  async findBookById(id: string) {
+    return {records: await BookEntity.findOne({_id: id}).select(["-__v",]), total: 1};
   }
 
-  // @ts-ignore
-  async findBookByQuery(
-    productName:
-      | string
-      | string[]
-      | QueryString.ParsedQs
-      | QueryString.ParsedQs[]
-  ): Promise<Boolean> {//: Promise<IBook[] | []> {
-    // return (await this.execRepository)
-    //   .createQueryBuilder("products")
-    //   .where("products.productName like :productName", {
-    //     productName: `%${productName}%`,
-    //   })
-    //   .getMany();
-    return await true
+  async findBookByQuery({offset, limit, bookQuery}: IPagination) {
+
+    const query = {
+      $or: [
+        {"ISBN": {$regex: `.*${bookQuery}.*`}},
+        {"Book-Title": {$regex: `.*${bookQuery}.*`}},
+        {"Book-Author": {$regex: `.*${bookQuery}.*`}},
+        {"Year-Of-Publication": {$regex: `.*${bookQuery}.*`}},
+        {"Publisher": {$regex: `.*${bookQuery}.*`}},
+      ]
+    }
+
+    const [records, total] = await Promise.all([
+      BookEntity.find(query)
+        .skip(offset)
+        .limit(limit)
+        .select(["-__v",]),
+      BookEntity.find(query).count()
+    ])
+    return {records, total}
   }
 
   async createBook(body: BookDTO): Promise<Boolean> {//: Promise<IBook> {
