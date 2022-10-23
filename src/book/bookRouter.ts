@@ -1,41 +1,52 @@
-import { BaseRouter } from "../shared/router/router";
-import { BookController } from "./controllers/bookController";
-import { BookMiddleware } from "./middlewares/bookMiddleware";
-export class BookRouter extends BaseRouter<
-  BookController,
-  BookMiddleware
-> {
+import {BaseRouter} from "../shared/router/router";
+import {BookController} from "./controllers/bookController";
+import {BookMiddleware} from "./middlewares/bookMiddleware";
+import {check} from "express-validator";
+import { Request, Response } from "express";
+
+export class BookRouter extends BaseRouter<BookController,
+  BookMiddleware> {
   constructor() {
     super(BookController, BookMiddleware);
   }
 
   routes(): void {
-    this.router.get("/book", (req, res) =>
-      this.controller.getBook(req, res)
+
+    this.router.get("/book",
+      [
+        check('limit', 'Un valor entre 1 y 50').isInt({min: 1, max: 50}),
+        check('offset', 'Un valor mayor a 0').isInt({min: 0}),
+        this.middleware.errorValidation,
+      ],
+      (req: Request, res: Response) =>this.controller.getBook(req, res)
     );
-    this.router.get("/book/product/:id", (req, res) =>
-      this.controller.getBookById(req, res)
+
+    this.router.get("/book/product/:id",
+      this.controller.getBookById
     );
-    this.router.get("/book/search", (req, res) =>
-      this.controller.findBookByName(req, res)
+
+    this.router.get("/book/search",
+      [
+        check('limit', 'Un valor entre 1 y 50').isInt({min: 1, max: 50}),
+        check('offset', 'Un valor mayor a 0').isInt({min: 0}),
+        this.middleware.errorValidation,
+      ],
+      this.controller.findBookByName
     );
+
     this.router.post(
       "/book/create",
-      (req, res, next) => [
-        this.middleware.checkAdminRole(req, res, next),
-        this.middleware.bookValidator(req, res, next),
-      ],
-      (req, res) => this.controller.createBook(req, res)
+      this.controller.createBook
     );
+
     this.router.put(
       "/book/update/:id",
-      (req, res, next) => [this.middleware.checkAdminRole(req, res, next)],
-      (req, res) => this.controller.updateBook(req, res)
+      this.controller.updateBook
     );
+
     this.router.delete(
       "/book/delete/:id",
-      (req, res, next) => [this.middleware.checkAdminRole(req, res, next)],
-      (req, res) => this.controller.deleteBook(req, res)
+      this.controller.deleteBook
     );
   }
 }
