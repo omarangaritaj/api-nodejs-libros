@@ -9,17 +9,14 @@ dotenv.config({
 });
 
 const Config = {
-  host: process.env.DB_HOST,
   port: Number(process.env.DB_PORT),
-  username: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_DATABASE,
+  database: process.env.DB_HOST,
 };
 
 
 export const dbConnection = async (): Promise<any> => {
   try {
-    await mongoose.connect(`mongodb://${Config.host}:${Config.port}/${Config.database}`,
+    await mongoose.connect(`${Config.database}`,
       {
         // useCreateIndex: true,
         // useFindAndModify: false,

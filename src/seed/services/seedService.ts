@@ -39,6 +39,8 @@ export class SeedService extends BaseService<SeedEntity> {
   }
 
   async createSeed(): Promise<Boolean> {
+    const csvUrl = this.getEnvironment('BOOK_URL')
+    if (!csvUrl) throw new Error('No puede descargar el archivo CSV, ¿tiene la URL del csv en la variable de entorno?')
     const booksQty = await BookEntity.count()
     console.log(booksQty)
     if (booksQty != 0) return false

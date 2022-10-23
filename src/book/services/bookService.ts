@@ -66,13 +66,19 @@ export class BookService extends BaseService<BookDTO> {
     book.publisher ? query["Publisher"] = {$regex: `.*${book.publisher}.*`} : undefined
     book.title ? query["Book-Title"] = {$regex: `.*${book.title}.*`} : undefined
     book.year ? query["Year-Of-Publication"] = {$regex: `.*${book.year}.*`} : undefined
-    query.$or = [
-      {"ISBN": {$regex: `.*${book.bookQuery}.*`}},
-      {"Book-Title": {$regex: `.*${book.bookQuery}.*`}},
-      {"Book-Author": {$regex: `.*${book.bookQuery}.*`}},
-      {"Year-Of-Publication": {$regex: `.*${book.bookQuery}.*`}},
-      {"Publisher": {$regex: `.*${book.bookQuery}.*`}},
-    ]
+
+    // const returnedTarget = Object.assign([], query);
+    // const otherQuery = {
+    //   $or: [
+    //     {"ISBN": {$regex: `.*${book.bookQuery}.*`}},
+    //     {"Book-Title": {$regex: `.*${book.bookQuery}.*`}},
+    //     {"Book-Author": {$regex: `.*${book.bookQuery}.*`}},
+    //     {"Year-Of-Publication": {$regex: `.*${book.bookQuery}.*`}},
+    //     {"Publisher": {$regex: `.*${book.bookQuery}.*`}},
+    //   ]
+    // }
+    //
+    // returnedTarget.push(otherQuery)
     return query
   }
 }
