@@ -8,7 +8,7 @@ export class BookMiddleware extends SharedMiddleware {
   constructor() {
     super();
   }
-  productValidator(req: Request, res: Response, next: NextFunction) {
+  bookValidator(req: Request, res: Response, next: NextFunction) {
     const { productName, description, category, price } = req.body;
 
     const valid = new BookDTO();

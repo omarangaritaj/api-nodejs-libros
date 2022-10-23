@@ -1,47 +1,69 @@
-import { Request } from "express";
-import QueryString from "qs";
-import { DeleteResult, UpdateResult } from "typeorm";
-import { BaseService } from "../../config/base.service";
-import { BookDTO } from "../dto/bookDTO";
+import {BookDTO} from "../dto/bookDTO";
 
-import { BookEntity } from "../entities/bookEntity";
-export class BookService extends BaseService<BookEntity> {
+import BookEntity from "../entities/bookEntity";
+import {IBook} from "../interfaces/IBook";
+import {BaseService} from "../../config/base.service";
+import {IPagination} from "../../shared/interfaces/pagination.interfaces";
+
+
+export class BookService extends BaseService<BookDTO> {
   constructor() {
     super(BookEntity);
   }
 
-  async findAllProducts(): Promise<BookEntity[]> {
-    return (await this.execRepository).find();
-  }
-  async findProductById(id: string): Promise<BookEntity | null> {
-    return (await this.execRepository).findOneBy({ id });
+  async findAllBooks({offset, limit}: IPagination) {
+
+    const [records, total] = await Promise.all([
+      BookEntity.find()
+        .skip(offset)
+        .limit(limit)
+        .select(["-__v",]),
+      BookEntity.find().count()
+    ])
+    return {records, total}
   }
 
-  async findProductsByName(
-    productName:
-      | string
-      | string[]
-      | QueryString.ParsedQs
-      | QueryString.ParsedQs[]
-  ): Promise<BookEntity[] | []> {
-    return (await this.execRepository)
-      .createQueryBuilder("products")
-      .where("products.productName like :productName", {
-        productName: `%${productName}%`,
-      })
-      .getMany();
+  async findBookById(id: string) {
+    return {records: await BookEntity.findOne({_id: id}).select(["-__v",]), total: 1};
   }
 
-  async createProduct(body: BookDTO): Promise<BookEntity> {
-    return (await this.execRepository).save(body);
+  async findBookByQuery({offset, limit, bookQuery}: IPagination) {
+
+    const query = {
+      $or: [
+        {"ISBN": {$regex: `.*${bookQuery}.*`}},
+        {"Book-Title": {$regex: `.*${bookQuery}.*`}},
+        {"Book-Author": {$regex: `.*${bookQuery}.*`}},
+        {"Year-Of-Publication": {$regex: `.*${bookQuery}.*`}},
+        {"Publisher": {$regex: `.*${bookQuery}.*`}},
+      ]
+    }
+
+    const [records, total] = await Promise.all([
+      BookEntity.find(query)
+        .skip(offset)
+        .limit(limit)
+        .select(["-__v",]),
+      BookEntity.find(query).count()
+    ])
+    return {records, total}
   }
-  async deleteProduct(id: string): Promise<DeleteResult> {
-    return (await this.execRepository).delete({ id });
+
+  async createBook(body: BookDTO): Promise<Boolean> {//: Promise<IBook> {
+    // return await BookEntity.create(body)
+    return await true
   }
-  async updateProduct(
+
+  async deleteBook(id: string): Promise<Boolean> {//: Promise<DeleteResult> {
+    // return (await this.execRepository).delete({id});
+    return await true
+  }
+
+  async updateBook(
     id: string,
     infoUpdate: BookDTO
-  ): Promise<UpdateResult> {
-    return (await this.execRepository).update(id, infoUpdate);
+  ): Promise<Boolean> {//: Promise<DeleteResult> {
+    // return (await this.execRepository).delete({id});
+    return await true
   }
 }

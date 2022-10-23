@@ -3,7 +3,7 @@ import express from "express";
 import morgan from "morgan";
 import cors from "cors";
 import {ConfigServer} from "./config/config";
-import {ProductRouter} from "./book/product.router";
+import {BookRouter} from "./book/bookRouter";
 import {SeedRouter} from "./seed/seedRouter";
 
 
@@ -32,7 +32,7 @@ class ServerBootstrap extends ConfigServer {
 
   routers(): Array<express.Router> {
     return [
-      new ProductRouter().router,
+      new BookRouter().router,
       new SeedRouter().router,
     ];
   }

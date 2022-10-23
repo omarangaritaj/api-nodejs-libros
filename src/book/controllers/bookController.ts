@@ -1,31 +1,57 @@
-import { Request, Response } from "express";
-import { DeleteResult, UpdateResult } from "typeorm";
-import { HttpResponse } from "../../shared/response/http.response";
-import { BookService } from "../services/bookService";
+import {Request, Response} from "express";
+import {HttpResponse,} from "../../shared/response/http.response";
+import {BookService} from "../services/bookService";
+import {IPagination} from "../../shared/interfaces/pagination.interfaces";
 
 export class BookController {
   constructor(
     private readonly bookService: BookService = new BookService(),
     private readonly httpResponse: HttpResponse = new HttpResponse()
-  ) {}
+  ) {
+  }
 
-  async getProducts(req: Request, res: Response) {
+  async getBooks(req: Request, res: Response) {
+    const {offset, limit} = req.query
+    const queryData = <IPagination>{
+      limit: Number(limit),
+      offset: Number(offset),
+    }
     try {
-      // const data = await this.bookService.findAllProducts();
-      // if (data.length === 0) {
-      //   return this.httpResponse.NotFound(res, "No existe dato");
-      // }
-      return this.httpResponse.Ok(res, {ok:true});
+      const data = await this.bookService.findAllBooks(queryData);
+      if (data.total === 0) {
+        return this.httpResponse.NotFound(res, "No hay libros. Ejecute '/api/seed'");
+      }
+      return this.httpResponse.Ok(res, data);
     } catch (e) {
       console.error(e);
       return this.httpResponse.Error(res, e);
     }
   }
 
-  async getProductById(req: Request, res: Response) {
-    const { id } = req.params;
+  async getBookById(req: Request, res: Response) {
+    const {id} = req.params;
     try {
-      const data = await this.bookService.findProductById(id);
+      const data = await this.bookService.findBookById(id);
+      if (!data) {
+        return this.httpResponse.NotFound(res, "No existe libro con ese ID");
+      }
+      return this.httpResponse.Ok(res, data);
+    } catch (e) {
+      console.error(e);
+      return this.httpResponse.Error(res, e);
+    }
+  }
+
+  async findBookByQuery(req: Request, res: Response) {
+    const {offset, limit, query} = req.query
+    try {
+
+      const queryData =  <IPagination>{
+        limit: Number(limit),
+        offset: Number(offset),
+        bookQuery: query
+      }
+      const data = await this.bookService.findBookByQuery(queryData);
       if (!data) {
         return this.httpResponse.NotFound(res, "No existe dato");
       }
@@ -36,24 +62,9 @@ export class BookController {
     }
   }
 
-  async findProductsByName(req: Request, res: Response) {
-    const { search } = req.query;
+  async createBook(req: Request, res: Response) {
     try {
-      if (search !== undefined) {
-        const data = await this.bookService.findProductsByName(search);
-        if (!data) {
-          return this.httpResponse.NotFound(res, "No existe dato");
-        }
-        return this.httpResponse.Ok(res, data);
-      }
-    } catch (e) {
-      console.error(e);
-      return this.httpResponse.Error(res, e);
-    }
-  }
-  async createProduct(req: Request, res: Response) {
-    try {
-      const data = await this.bookService.createProduct(req.body);
+      const data = await this.bookService.createBook(req.body);
       if (!data) {
         return this.httpResponse.NotFound(res, "No existe dato");
       }
@@ -63,13 +74,17 @@ export class BookController {
       return this.httpResponse.Error(res, e);
     }
   }
-  async updateProduct(req: Request, res: Response) {
-    const { id } = req.params;
+
+  async updateBook(req: Request, res: Response) {
+    const {id} = req.params;
     try {
-      const data: UpdateResult = await this.bookService.updateProduct(
-        id,
-        req.body
-      );
+      // const data: UpdateResult = await this.bookService.updateBook(
+      //   id,
+      //   req.body
+      // );
+      const data = {
+        affected: false
+      }
       if (!data.affected) {
         return this.httpResponse.NotFound(res, "Hay un error en actualizar");
       }
@@ -80,14 +95,16 @@ export class BookController {
       return this.httpResponse.Error(res, e);
     }
   }
-  async deleteProduct(req: Request, res: Response) {
-    const { id } = req.params;
+
+  async deleteBook(req: Request, res: Response) {
+    const {id} = req.params;
     try {
-      const data: DeleteResult = await this.bookService.deleteProduct(id);
+      // const data: DeleteResult = await this.bookService.deleteBook(id);
+      const data = {}
       res.status(200).json(data);
-      if (!data.affected) {
-        return this.httpResponse.NotFound(res, "Hay un error en borrar");
-      }
+      // if (!data.affected) {
+      //   return this.httpResponse.NotFound(res, "Hay un error en borrar");
+      // }
       return this.httpResponse.Ok(res, data);
     } catch (e) {
       console.error(e);

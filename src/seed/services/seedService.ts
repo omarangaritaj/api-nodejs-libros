@@ -1,45 +1,48 @@
 import * as fs from "fs";
 import * as path from "path";
-import {parse} from 'csv-parse';
+
+import BookEntity from '../../book/entities/bookEntity'
 
 import {BaseService} from "../../config/base.service";
 import {SeedEntity} from "../entities/category.entity";
-
-type WorldCity = {
-  name: string;
-  country: string;
-  subCountry: string;
-  geoNameId: number;
-};
+import axios from "axios";
+import CSVToJSON from 'csvtojson'
+import {IBook} from "../../book/interfaces/IBook";
 
 export class SeedService extends BaseService<SeedEntity> {
   constructor() {
     super(SeedEntity);
   }
 
-  loadCsvFile(): void {
-    const csvFilePath = path.resolve(__dirname, '../books.csv');
-    const headers = ["ISBN", "Book-Title", "Book-Author", "Year-Of-Publication", "Publisher", "Image-URL-S", "Image-URL-M", "Image-URL-L"];
-    const fileContent = fs.readFileSync(csvFilePath, {encoding: 'utf-8'});
+  private async downloadCsvFile(): Promise<Boolean> {
+    const csvUrl = this.getEnvironment('BOOK_URL')
+    const csvFilePath = path.resolve(__dirname, 'books.csv');
+    if (csvUrl == null) {
+      return false
+    }
+    const {data} = await axios.get(csvUrl)
 
-    parse(fileContent, {
-      delimiter: ';',
-      columns: headers,
-    }, (error, result: WorldCity[]) => {
-      if (error) {
-        console.error(error);
-      }
-      console.log("Result", result);
-      return result
+    fs.writeFile(csvFilePath, data, async (err) => {
+      if (err) return false;
+      const resutlJSON = await CSVToJSON({
+        delimiter: ';'
+      }).fromFile(csvFilePath)
+      await this.saveData(resutlJSON)
     });
+    return true
   }
 
-  async findCategoryById(id: string): Promise<SeedEntity | null> {
-    return (await this.execRepository).findOneBy({id});
+  private async saveData(data: IBook[]) {
+    const wasSaved = await BookEntity.insertMany(data)
+    console.log('Books inserted in DB')
+    return wasSaved
   }
 
-  createSeed(): [String | null] {
-    this.loadCsvFile()
-    return ['']
+  async createSeed(): Promise<Boolean> {
+    const booksQty = await BookEntity.count()
+    console.log(booksQty)
+    if (booksQty != 0) return false
+    const result = await this.downloadCsvFile()
+    return result
   }
 }
