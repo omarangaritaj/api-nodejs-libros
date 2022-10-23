@@ -10,7 +10,7 @@ export class BookController {
   ) {
   }
 
-  async getBook(req: Request, res: Response) {
+  async getBooks(req: Request, res: Response) {
     const {offset, limit} = req.query
     const queryData = <IPagination>{
       limit: Number(limit),
@@ -33,7 +33,7 @@ export class BookController {
     try {
       const data = await this.bookService.findBookById(id);
       if (!data) {
-        return this.httpResponse.NotFound(res, "No existe dato");
+        return this.httpResponse.NotFound(res, "No existe libro con ese ID");
       }
       return this.httpResponse.Ok(res, data);
     } catch (e) {
@@ -46,7 +46,7 @@ export class BookController {
     const {search} = req.query;
     try {
       if (search !== undefined) {
-        const data = await this.bookService.findBookByName(search);
+        const data = await this.bookService.findBookByQuery(search);
         if (!data) {
           return this.httpResponse.NotFound(res, "No existe dato");
         }

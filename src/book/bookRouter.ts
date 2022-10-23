@@ -2,7 +2,7 @@ import {BaseRouter} from "../shared/router/router";
 import {BookController} from "./controllers/bookController";
 import {BookMiddleware} from "./middlewares/bookMiddleware";
 import {check} from "express-validator";
-import { Request, Response } from "express";
+import {Request, Response} from "express";
 
 export class BookRouter extends BaseRouter<BookController,
   BookMiddleware> {
@@ -18,11 +18,15 @@ export class BookRouter extends BaseRouter<BookController,
         check('offset', 'Un valor mayor a 0').isInt({min: 0}),
         this.middleware.errorValidation,
       ],
-      (req: Request, res: Response) =>this.controller.getBook(req, res)
+      (req: Request, res: Response) => this.controller.getBooks(req, res)
     );
 
-    this.router.get("/book/product/:id",
-      this.controller.getBookById
+    this.router.get("/book/:id",
+      [
+        check('id', 'Debe ser un ID válido').isMongoId(),
+        this.middleware.errorValidation,
+      ],
+      (req: Request, res: Response) =>this.controller.getBookById(req, res)
     );
 
     this.router.get("/book/search",

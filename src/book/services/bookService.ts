@@ -7,28 +7,30 @@ import {BaseService} from "../../config/base.service";
 import {IPagination} from "../../shared/interfaces/pagination.interfaces";
 
 
-export class BookService extends BaseService<BookDTO>{
+export class BookService extends BaseService<BookDTO> {
   constructor() {
     super(BookEntity);
   }
 
   async findAllBooks({offset, limit}: IPagination): Promise<IBook[]> {
-    return BookEntity.find().skip(offset).limit(limit);
+    return BookEntity.find()
+      .skip(offset)
+      .limit(limit)
+      .select(["-__v",]);
   }
 
-  async findBookById(id: string):Promise<Boolean>{//: Promise<IBook | null> {
-    // return (await this.execRepository).findOneBy({id});
-    return await true
+  async findBookById(id: string): Promise<IBook | null> {
+    return BookEntity.findOne({_id: id}).select(["-__v",]);
   }
 
   // @ts-ignore
-  async findBookByName(
+  async findBookByQuery(
     productName:
       | string
       | string[]
       | QueryString.ParsedQs
       | QueryString.ParsedQs[]
-  ):Promise<Boolean>{//: Promise<IBook[] | []> {
+  ): Promise<Boolean> {//: Promise<IBook[] | []> {
     // return (await this.execRepository)
     //   .createQueryBuilder("products")
     //   .where("products.productName like :productName", {
@@ -38,12 +40,12 @@ export class BookService extends BaseService<BookDTO>{
     return await true
   }
 
-  async createBook(body: BookDTO):Promise<Boolean>{//: Promise<IBook> {
+  async createBook(body: BookDTO): Promise<Boolean> {//: Promise<IBook> {
     // return await BookEntity.create(body)
     return await true
   }
 
-  async deleteBook(id: string):Promise<Boolean>{//: Promise<DeleteResult> {
+  async deleteBook(id: string): Promise<Boolean> {//: Promise<DeleteResult> {
     // return (await this.execRepository).delete({id});
     return await true
   }
@@ -51,8 +53,8 @@ export class BookService extends BaseService<BookDTO>{
   async updateBook(
     id: string,
     infoUpdate: BookDTO
-  ):Promise<Boolean>{//: Promise<DeleteResult> {
-      // return (await this.execRepository).delete({id});
-      return await true
+  ): Promise<Boolean> {//: Promise<DeleteResult> {
+    // return (await this.execRepository).delete({id});
+    return await true
   }
 }
