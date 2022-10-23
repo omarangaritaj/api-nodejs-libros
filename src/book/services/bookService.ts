@@ -1,10 +1,10 @@
 import QueryString from "qs";
-import {DeleteResult, UpdateResult} from "typeorm";
 import {BookDTO} from "../dto/bookDTO";
 
-import {BookEntity} from "../entities/bookEntity";
-import {IBook} from "../IBook";
+import BookEntity from "../entities/bookEntity";
+import {IBook} from "../interfaces/IBook";
 import {BaseService} from "../../config/base.service";
+import {IPagination} from "../../shared/interfaces/pagination.interfaces";
 
 
 export class BookService extends BaseService<BookDTO>{
@@ -12,8 +12,8 @@ export class BookService extends BaseService<BookDTO>{
     super(BookEntity);
   }
 
-  async findAllBooks(){//: Promise<IBook[]> {
-    // return await this.execRepository.find();
+  async findAllBooks({offset, limit}: IPagination): Promise<IBook[]> {
+    return BookEntity.find().skip(offset).limit(limit);
   }
 
   async findBookById(id: string):Promise<Boolean>{//: Promise<IBook | null> {
@@ -51,7 +51,8 @@ export class BookService extends BaseService<BookDTO>{
   async updateBook(
     id: string,
     infoUpdate: BookDTO
-  ): Promise<UpdateResult> {
-    return (await this.execRepository).update(id, infoUpdate);
+  ):Promise<Boolean>{//: Promise<DeleteResult> {
+      // return (await this.execRepository).delete({id});
+      return await true
   }
 }

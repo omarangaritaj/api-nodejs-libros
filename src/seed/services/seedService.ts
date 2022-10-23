@@ -7,7 +7,7 @@ import {BaseService} from "../../config/base.service";
 import {SeedEntity} from "../entities/category.entity";
 import axios from "axios";
 import CSVToJSON from 'csvtojson'
-import {IBook} from "../../book/IBook";
+import {IBook} from "../../book/interfaces/IBook";
 
 export class SeedService extends BaseService<SeedEntity> {
   constructor() {

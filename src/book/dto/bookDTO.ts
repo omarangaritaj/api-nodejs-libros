@@ -1,13 +1,30 @@
-import { IsNotEmpty } from "class-validator";
-import { BaseDTO } from "../../config/base.dto";
+import {IsNotEmpty} from "class-validator";
+import {BaseDTO} from "../../config/base.dto";
 
 export class BookDTO extends BaseDTO {
-  @IsNotEmpty()
-  productName!: string;
+
+   @IsNotEmpty()
+   "ISBN": string
 
   @IsNotEmpty()
-  description!: string;
+   "Book-Title": string
 
   @IsNotEmpty()
-  price!: number;
+   "Book-Author": string
+
+  @IsNotEmpty()
+   "Year-Of-Publication": string
+
+  @IsNotEmpty()
+   "Publisher": string
+
+  @IsNotEmpty()
+   "Image-URL-S": string
+
+  @IsNotEmpty()
+   "Image-URL-M": string
+
+  @IsNotEmpty()
+   "Image-URL-L": string
 }
+

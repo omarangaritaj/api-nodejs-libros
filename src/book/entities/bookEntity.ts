@@ -1,5 +1,5 @@
 import mongoose, {Schema} from 'mongoose';
-import {IBook} from "../IBook";
+import {IBook} from "../interfaces/IBook";
 
 const BookSchema: Schema = new Schema(
   {
@@ -17,5 +17,3 @@ const BookSchema: Schema = new Schema(
 
 export default mongoose.model<IBook>('Book', BookSchema);
 
-export class BookEntity {
-}
