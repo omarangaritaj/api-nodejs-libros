@@ -1,8 +1,8 @@
+import {Request, Response} from "express";
 import {BaseRouter} from "../shared/router/router";
 import {BookController} from "./controllers/bookController";
 import {BookMiddleware} from "./middlewares/bookMiddleware";
-import {check} from "express-validator";
-import {Request, Response} from "express";
+import {check, query} from "express-validator";
 
 export class BookRouter extends BaseRouter<BookController,
   BookMiddleware> {
@@ -14,8 +14,8 @@ export class BookRouter extends BaseRouter<BookController,
 
     this.router.get("/book",
       [
-        check('limit', 'Un valor entre 1 y 50').isInt({min: 1, max: 50}),
-        check('offset', 'Un valor mayor a 0').isInt({min: 0}),
+        check('limit', 'Debe ser un valor entre 1 y 50').isInt({min: 1, max: 50}),
+        check('page', 'Debe ser un valor mayor a 0').isInt({min: 0}),
         this.middleware.errorValidation,
       ],
       (req: Request, res: Response) => this.controller.getBooks(req, res)
@@ -23,11 +23,12 @@ export class BookRouter extends BaseRouter<BookController,
 
     this.router.get("/book/search",
       [
-        check('limit', 'Un valor entre 1 y 50').isInt({min: 1, max: 50}),
-        check('offset', 'Un valor mayor a 0').isInt({min: 0}),
+        check('limit', 'Debe ser un valor entre 1 y 50').isInt({min: 1, max: 50}),
+        check('page', 'Debe ser un valor mayor a 0').isInt({min: 0}),
+        query(['author', 'isbn', 'publisher', 'title', 'year']).escape(),
         this.middleware.errorValidation,
       ],
-      (req: Request, res: Response) =>this.controller.findBookByQuery(req, res)
+      (req: Request, res: Response) => this.controller.findBookByQuery(req, res)
     );
 
     this.router.get("/book/:id",
@@ -35,22 +36,22 @@ export class BookRouter extends BaseRouter<BookController,
         check('id', 'Debe ser un ID válido').isMongoId(),
         this.middleware.errorValidation,
       ],
-      (req: Request, res: Response) =>this.controller.getBookById(req, res)
+      (req: Request, res: Response) => this.controller.getBookById(req, res)
     );
 
     this.router.post(
       "/book/create",
-      this.controller.createBook
+      (req: Request, res: Response) => this.controller.createBook(req, res)
     );
 
     this.router.put(
       "/book/update/:id",
-      this.controller.updateBook
+      (req: Request, res: Response) => this.controller.updateBook(req, res)
     );
 
     this.router.delete(
       "/book/delete/:id",
-      this.controller.deleteBook
+      (req: Request, res: Response) => this.controller.deleteBook(req, res)
     );
   }
 }

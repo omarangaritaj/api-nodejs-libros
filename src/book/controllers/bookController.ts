@@ -12,10 +12,10 @@ export class BookController {
   }
 
   async getBooks(req: Request, res: Response) {
-    const {offset, limit} = req.query
+    const {page, limit} = req.query
     const queryData = <IPagination>{
       limit: Number(limit),
-      offset: Number(offset),
+      page: Number(page),
     }
     try {
       const data = await this.bookService.findAllBooks(queryData);
@@ -44,14 +44,14 @@ export class BookController {
   }
 
   async findBookByQuery(req: Request, res: Response) {
-    const {offset, limit, query, author, title, year, publisher, isbn} = req.query
+    const {page, limit, query, author, title, year, publisher, isbn} = req.query
     try {
       const queryData = <IBook>{
         author,
         bookQuery: query,
         isbn,
         limit: Number(limit),
-        offset: Number(offset),
+        page: Number(page),
         publisher,
         title,
         year,

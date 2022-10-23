@@ -1,7 +1,7 @@
 import {BookDTO} from "../dto/bookDTO";
 
 import BookEntity from "../entities/bookEntity";
-import {IBook} from "../interfaces/IBook";
+import {IBook, IQuery} from "../interfaces/IBook";
 import {BaseService} from "../../config/base.service";
 import {IPagination} from "../../shared/interfaces/pagination.interfaces";
 
@@ -11,16 +11,16 @@ export class BookService extends BaseService<BookDTO> {
     super(BookEntity);
   }
 
-  async findAllBooks({offset, limit}: IPagination) {
-
+  async findAllBooks({page, limit}: IPagination) {
     const [records, total] = await Promise.all([
       BookEntity.find()
-        .skip(offset)
+        .skip((page - 1) * limit)
         .limit(limit)
         .select(["-__v",]),
       BookEntity.find().count()
     ])
-    return {records, total}
+    const pages = Math.ceil(total / limit)
+    return {records, total, pages}
   }
 
   async findBookById(id: string) {
@@ -28,52 +28,16 @@ export class BookService extends BaseService<BookDTO> {
   }
 
   async findBookByQuery(book: IBook) {
-
     const query = this.buildQuery(book)
-    console.log(query)
     const [records, total] = await Promise.all([
       BookEntity.find(query)
-        .skip(book.offset)
+        .skip((book.page - 1) * book.limit)
         .limit(book.limit)
         .select(["-__v",]),
       BookEntity.find(query).count()
     ])
-    return {records, total}
-  }
-
-  private buildQuery(book: IBook) {
-    const presentFields: string[] = []
-    Object.keys(book).forEach(key => {
-      // @ts-ignore
-      if (book[key] && !['limit', 'offset', 'bookQuery'].includes(key)) {
-        presentFields.push(key)
-      }
-    })
-
-    const data = new Map()
-    presentFields.forEach(key => {
-      // @ts-ignore
-      data.set(key, book[key])// {$regex: `.*${book[key]}.*`})
-    })
-    console.log(data)
-    console.log(Object.fromEntries(data))
-
-    // return Object.fromEntries(data)
-
-    return data //Object.fromEntries(data)
-    // {
-
-          // $or: [
-          //   {"ISBN": {$regex: `.*${book.bookQuery}.*`}},
-          //   {"Book-Title": {$regex: `.*${book.bookQuery}.*`}},
-          //   {"Book-Author": {$regex: `.*${book.bookQuery}.*`}},
-          //   {"Year-Of-Publication": {$regex: `.*${book.bookQuery}.*`}},
-          //   {"Publisher": {$regex: `.*${book.bookQuery}.*`}},
-          // ],
-          // Object.fromEntries(data)
-        // }
-        //
-    // }
+    const pages = Math.ceil(total / book.limit)
+    return {records, total, pages}
   }
 
   async createBook(body: BookDTO): Promise<Boolean> {//: Promise<IBook> {
@@ -92,5 +56,23 @@ export class BookService extends BaseService<BookDTO> {
   ): Promise<Boolean> {//: Promise<DeleteResult> {
     // return (await this.execRepository).delete({id});
     return await true
+  }
+
+
+  private buildQuery(book: IBook): object {
+    const query = <IQuery>{}
+    book.author ? query["Book-Author"] = {$regex: `.*${book.author}.*`} : undefined
+    book.isbn ? query["ISBN"] = {$regex: `.*${book.isbn}.*`} : undefined
+    book.publisher ? query["Publisher"] = {$regex: `.*${book.publisher}.*`} : undefined
+    book.title ? query["Book-Title"] = {$regex: `.*${book.title}.*`} : undefined
+    book.year ? query["Year-Of-Publication"] = {$regex: `.*${book.year}.*`} : undefined
+    query.$or = [
+      {"ISBN": {$regex: `.*${book.bookQuery}.*`}},
+      {"Book-Title": {$regex: `.*${book.bookQuery}.*`}},
+      {"Book-Author": {$regex: `.*${book.bookQuery}.*`}},
+      {"Year-Of-Publication": {$regex: `.*${book.bookQuery}.*`}},
+      {"Publisher": {$regex: `.*${book.bookQuery}.*`}},
+    ]
+    return query
   }
 }

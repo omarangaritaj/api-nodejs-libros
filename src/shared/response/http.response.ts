@@ -14,6 +14,7 @@ export class HttpResponse {
     return res.status(HttpStatus.OK).json({
       status: HttpStatus.OK,
       statusMsg: "Success",
+      pages: data.pages,
       totalOfRecords: data.total,
       data: data.records,
     });
