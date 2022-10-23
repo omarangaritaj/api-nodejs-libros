@@ -2,6 +2,7 @@ import {Request, Response} from "express";
 import {HttpResponse,} from "../../shared/response/http.response";
 import {BookService} from "../services/bookService";
 import {IPagination} from "../../shared/interfaces/pagination.interfaces";
+import {IBook} from "../interfaces/IBook";
 
 export class BookController {
   constructor(
@@ -43,13 +44,17 @@ export class BookController {
   }
 
   async findBookByQuery(req: Request, res: Response) {
-    const {offset, limit, query} = req.query
+    const {offset, limit, query, author, title, year, publisher, isbn} = req.query
     try {
-
-      const queryData =  <IPagination>{
+      const queryData = <IBook>{
+        author,
+        bookQuery: query,
+        isbn,
         limit: Number(limit),
         offset: Number(offset),
-        bookQuery: query
+        publisher,
+        title,
+        year,
       }
       const data = await this.bookService.findBookByQuery(queryData);
       if (!data) {

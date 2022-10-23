@@ -1,12 +1,10 @@
-import {Document} from "mongoose";
+import {IPagination} from "../../shared/interfaces/pagination.interfaces";
 
-export interface IBook extends Document {
-  "ISBN": string
-  "Book-Title": string
-  "Book-Author": string
-  "Year-Of-Publication": string
-  "Publisher": string
-  "Image-URL-S": string
-  "Image-URL-M": string
-  "Image-URL-L": string
+export interface IBook extends IPagination{
+  key?: string;
+  "isbn": string
+  "title": string
+  "author": string
+  "year": string
+  "publisher": string
 }
