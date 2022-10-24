@@ -1,0 +1,238 @@
+{
+	"info": {
+		"_postman_id": "e815b5e5-764f-4128-9903-89814daf0c15",
+		"name": "API-Books",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "14225389"
+	},
+	"item": [
+		{
+			"name": "Get all Books (/api/books)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/book?limit=20&page=1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"book"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "20"
+						},
+						{
+							"key": "page",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get ONE book (api/book/:id)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/book/:id",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"book",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "635480bc522ff1c5ea44d0fb"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Search by all fields (/api/book/search)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/book/search?limit=20&page=1&isbn=924570",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"book",
+						"search"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "20"
+						},
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "author",
+							"value": "<any_author>",
+							"disabled": true
+						},
+						{
+							"key": "year",
+							"value": "1982",
+							"disabled": true
+						},
+						{
+							"key": "isbn",
+							"value": "924570"
+						},
+						{
+							"key": "publisher",
+							"value": "<any_publisher>",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Book (/api/book)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"ISBN\": \"924570\",\n  \"Book-Title\": \"un titulo\",\n  \"Book-Author\": \"un autor\",\n  \"Year-Of-Publication\": \"1982\",\n  \"Publisher\": \"una casa\",\n  \"Image-URL-S\": \"http://images.amazon.com/images/P/0195153448.01.THUMBZZZ.jpg\",\n  \"Image-URL-M\": \"http://images.amazon.com/images/P/0195153448.01.MZZZZZZZ.jpg\",\n  \"Image-URL-L\": \"http://images.amazon.com/images/P/0195153448.01.LZZZZZZZ.jpg\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/book",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"book"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Book (/api/book) Copy",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"ISBN\": \"924570\",\n  \"Book-Title\": \"un titulo_Q\",\n  \"Book-Author\": \"un autor_aa\",\n  \"Year-Of-Publication\": \"1982\",\n  \"Publisher\": \"una casa\",\n  \"Image-URL-S\": \"http://images.amazon.com/images/P/0195153448.01.THUMBZZZ.jpg\",\n  \"Image-URL-M\": \"http://images.amazon.com/images/P/0195153448.01.MZZZZZZZ.jpg\",\n  \"Image-URL-L\": \"http://images.amazon.com/images/P/0195153448.01.LZZZZZZZ.jpg\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/book/:id",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"book",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "6355f11aa55b51f90e6449a7"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Book (/api/book)",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/book/:id",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"book",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "6355ecb3bf2810ffe26ed324"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Seed (/api/seed)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/seed",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"seed"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

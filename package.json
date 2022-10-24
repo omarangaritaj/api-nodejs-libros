@@ -7,10 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "tsc && node dist/server.js",
     "start:dev": "tsc && concurrently \"tsc -w\" \"nodemon dist/server.js\"",
-    "start:prod": "SET NODE_ENV=production && npm start",
-    "typeorm": "typeorm-ts-node-esm -d ./src/config/data.source.ts",
-    "m:gen": "npm run typeorm migration:generate",
-    "m:run": "npm run typeorm migration:run"
+    "start:prod": "SET NODE_ENV=production && npm start"
   },
   "repository": {
     "type": "git",
@@ -28,7 +25,6 @@
     "class-validator": "^0.13.2",
     "cors": "^2.8.5",
     "csv-parse": "^5.3.1",
-    "csvjson": "^5.1.0",
     "csvtojson": "^2.0.10",
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
@@ -36,8 +32,7 @@
     "mongoose": "^6.6.7",
     "morgan": "^1.10.0",
     "reflect-metadata": "^0.1.13",
-    "typeorm": "0.3.6",
-    "typeorm-naming-strategies": "4.1.0",
+    "typeorm": "^0.3.10",
     "typescript": "^4.6.2"
   },
   "devDependencies": {

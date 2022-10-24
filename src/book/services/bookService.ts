@@ -1,7 +1,7 @@
 import {BookDTO} from "../dto/bookDTO";
 
 import BookEntity from "../entities/bookEntity";
-import {IBook} from "../interfaces/IBook";
+import {IBook, IQuery} from "../interfaces/IBook";
 import {BaseService} from "../../config/base.service";
 import {IPagination} from "../../shared/interfaces/pagination.interfaces";
 
@@ -11,59 +11,80 @@ export class BookService extends BaseService<BookDTO> {
     super(BookEntity);
   }
 
-  async findAllBooks({offset, limit}: IPagination) {
-
+  async findAllBooks({page, limit}: IPagination) {
     const [records, total] = await Promise.all([
       BookEntity.find()
-        .skip(offset)
+        .skip((page - 1) * limit)
         .limit(limit)
         .select(["-__v",]),
       BookEntity.find().count()
     ])
-    return {records, total}
+    const pages = Math.ceil(total / limit)
+    return {records, total, pages}
   }
 
   async findBookById(id: string) {
     return {records: await BookEntity.findOne({_id: id}).select(["-__v",]), total: 1};
   }
 
-  async findBookByQuery({offset, limit, bookQuery}: IPagination) {
-
-    const query = {
-      $or: [
-        {"ISBN": {$regex: `.*${bookQuery}.*`}},
-        {"Book-Title": {$regex: `.*${bookQuery}.*`}},
-        {"Book-Author": {$regex: `.*${bookQuery}.*`}},
-        {"Year-Of-Publication": {$regex: `.*${bookQuery}.*`}},
-        {"Publisher": {$regex: `.*${bookQuery}.*`}},
-      ]
-    }
-
+  async findBookByQuery(book: IBook) {
+    const query = this.buildQuery(book)
     const [records, total] = await Promise.all([
       BookEntity.find(query)
-        .skip(offset)
-        .limit(limit)
+        .skip((book.page - 1) * book.limit)
+        .limit(book.limit)
         .select(["-__v",]),
       BookEntity.find(query).count()
     ])
-    return {records, total}
+    const pages = Math.ceil(total / book.limit)
+    return {records, total, pages}
   }
 
-  async createBook(body: BookDTO): Promise<Boolean> {//: Promise<IBook> {
-    // return await BookEntity.create(body)
-    return await true
+  async createBook(body: BookDTO): Promise<IBook | null> {
+    const testBook = <IBook>{
+      page: 1,
+      limit: 2,
+      author: body["Book-Author"],
+      isbn: body["ISBN"],
+      publisher: body["Publisher"],
+      title: body["Book-Title"],
+      year: body["Year-Of-Publication"],
+    }
+    const bookExist = await this.findBookByQuery(testBook)
+    if (bookExist.total > 0) return null
+    return await BookEntity.create(body)
   }
 
-  async deleteBook(id: string): Promise<Boolean> {//: Promise<DeleteResult> {
-    // return (await this.execRepository).delete({id});
-    return await true
+  async deleteBook(id: string): Promise<object> {
+    console.log(id)
+    return BookEntity.deleteOne({_id: id});
   }
 
-  async updateBook(
-    id: string,
-    infoUpdate: BookDTO
-  ): Promise<Boolean> {//: Promise<DeleteResult> {
-    // return (await this.execRepository).delete({id});
-    return await true
+  async updateBook(id: string, infoUpdate: BookDTO): Promise<object> {
+    return BookEntity.updateOne({_id: id}, infoUpdate);
+  }
+
+
+  private buildQuery(book: IBook): object {
+    const query = <IQuery>{}
+    book.author ? query["Book-Author"] = {$regex: `.*${book.author}.*`} : undefined
+    book.isbn ? query["ISBN"] = {$regex: `.*${book.isbn}.*`} : undefined
+    book.publisher ? query["Publisher"] = {$regex: `.*${book.publisher}.*`} : undefined
+    book.title ? query["Book-Title"] = {$regex: `.*${book.title}.*`} : undefined
+    book.year ? query["Year-Of-Publication"] = {$regex: `.*${book.year}.*`} : undefined
+
+    // const returnedTarget = Object.assign([], query);
+    // const otherQuery = {
+    //   $or: [
+    //     {"ISBN": {$regex: `.*${book.bookQuery}.*`}},
+    //     {"Book-Title": {$regex: `.*${book.bookQuery}.*`}},
+    //     {"Book-Author": {$regex: `.*${book.bookQuery}.*`}},
+    //     {"Year-Of-Publication": {$regex: `.*${book.bookQuery}.*`}},
+    //     {"Publisher": {$regex: `.*${book.bookQuery}.*`}},
+    //   ]
+    // }
+    //
+    // returnedTarget.push(otherQuery)
+    return query
   }
 }

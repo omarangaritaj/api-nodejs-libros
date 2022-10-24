@@ -2,6 +2,7 @@ import { Response } from "express";
 
 export enum HttpStatus {
   OK = 200,
+  CREATED= 201,
   BAD_REQUEST = 400,
   NOT_FOUND = 404,
   UNAUTHORIZED = 401,
@@ -14,8 +15,17 @@ export class HttpResponse {
     return res.status(HttpStatus.OK).json({
       status: HttpStatus.OK,
       statusMsg: "Success",
+      pages: data.pages,
       totalOfRecords: data.total,
       data: data.records,
+    });
+  }
+
+  Created(res: Response, data?: any): Response {
+    return res.status(HttpStatus.CREATED).json({
+      status: HttpStatus.CREATED,
+      statusMsg: "Success",
+      data: data,
     });
   }
 
@@ -23,6 +33,14 @@ export class HttpResponse {
     return res.status(HttpStatus.NOT_FOUND).json({
       status: HttpStatus.NOT_FOUND,
       statusMsg: "Not Found",
+      error: data,
+    });
+  }
+
+  BadRequest(res: Response, data?: any): Response {
+    return res.status(HttpStatus.BAD_REQUEST).json({
+      status: HttpStatus.BAD_REQUEST,
+      statusMsg: "Can't create",
       error: data,
     });
   }

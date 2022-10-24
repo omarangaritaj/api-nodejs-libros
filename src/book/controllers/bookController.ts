@@ -2,6 +2,7 @@ import {Request, Response} from "express";
 import {HttpResponse,} from "../../shared/response/http.response";
 import {BookService} from "../services/bookService";
 import {IPagination} from "../../shared/interfaces/pagination.interfaces";
+import {IBook} from "../interfaces/IBook";
 
 export class BookController {
   constructor(
@@ -11,10 +12,10 @@ export class BookController {
   }
 
   async getBooks(req: Request, res: Response) {
-    const {offset, limit} = req.query
+    const {page, limit} = req.query
     const queryData = <IPagination>{
       limit: Number(limit),
-      offset: Number(offset),
+      page: Number(page),
     }
     try {
       const data = await this.bookService.findAllBooks(queryData);
@@ -43,13 +44,17 @@ export class BookController {
   }
 
   async findBookByQuery(req: Request, res: Response) {
-    const {offset, limit, query} = req.query
+    const {page, limit, query, author, title, year, publisher, isbn} = req.query
     try {
-
-      const queryData =  <IPagination>{
+      const queryData = <IBook>{
+        author,
+        bookQuery: query,
+        isbn,
         limit: Number(limit),
-        offset: Number(offset),
-        bookQuery: query
+        page: Number(page),
+        publisher,
+        title,
+        year,
       }
       const data = await this.bookService.findBookByQuery(queryData);
       if (!data) {
@@ -66,9 +71,9 @@ export class BookController {
     try {
       const data = await this.bookService.createBook(req.body);
       if (!data) {
-        return this.httpResponse.NotFound(res, "No existe dato");
+        return this.httpResponse.BadRequest(res, "No se pudo crear, puede ser que el libro ya exista");
       }
-      return this.httpResponse.Ok(res, data);
+      return this.httpResponse.Created(res, data);
     } catch (e) {
       console.error(e);
       return this.httpResponse.Error(res, e);
@@ -78,18 +83,12 @@ export class BookController {
   async updateBook(req: Request, res: Response) {
     const {id} = req.params;
     try {
-      // const data: UpdateResult = await this.bookService.updateBook(
-      //   id,
-      //   req.body
-      // );
-      const data = {
-        affected: false
-      }
-      if (!data.affected) {
-        return this.httpResponse.NotFound(res, "Hay un error en actualizar");
+      const data = await this.bookService.updateBook(id, req.body);
+      if (!data.modifiedCount) {
+        return this.httpResponse.NotFound(res, "Hay un error al actualizar");
       }
 
-      return this.httpResponse.Ok(res, data);
+      return this.httpResponse.Created(res, `Registros modificados: ${data.modifiedCount}`);
     } catch (e) {
       console.error(e);
       return this.httpResponse.Error(res, e);
@@ -99,13 +98,11 @@ export class BookController {
   async deleteBook(req: Request, res: Response) {
     const {id} = req.params;
     try {
-      // const data: DeleteResult = await this.bookService.deleteBook(id);
-      const data = {}
-      res.status(200).json(data);
-      // if (!data.affected) {
-      //   return this.httpResponse.NotFound(res, "Hay un error en borrar");
-      // }
-      return this.httpResponse.Ok(res, data);
+      const data = await this.bookService.deleteBook(id);
+      if (!data.deletedCount) {
+        return this.httpResponse.NotFound(res, "No se pudo borrar, es posible que el ID no exista");
+      }
+      return this.httpResponse.Ok(res, {records: `Registros borrados: ${data.deletedCount}`});
     } catch (e) {
       console.error(e);
       return this.httpResponse.Error(res, e);
