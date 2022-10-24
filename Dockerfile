@@ -6,16 +6,10 @@ WORKDIR /usr/src/app
 
 COPY package*.json ./
 
-COPY . .
+RUN npm install --omit=dev
 
-RUN npm install
-
-ENV NODE_ENV=production
-
-RUN tsc
-
-RUN rm -rf ./src
+COPY ./dist ./dist
 
 EXPOSE 3000
 
-CMD ["npm","start"]
+CMD ["npm","run","start:prod"]

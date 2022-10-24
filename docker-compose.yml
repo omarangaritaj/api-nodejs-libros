@@ -1,16 +1,19 @@
 version: "3.1"
 
 services:
-  codrr_db:
-    image: mysql:5.7
+  mongo_db:
+    image: mongo
     volumes:
-      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
-    command: --init-file /docker-entrypoint-initdb.d/init.sql
+      - ./mongodb:/data/db
     ports:
-      - "3312:3306"
+      - "27017:27017"
+
+  api-books:
+    image: omarang/api-books:latest
+    ports:
+      - "3000:3000"
     environment:
-      MYSQL_DATABASE: codrr_db
-      MYSQL_ROOT_USER: ucodrr
-      MYSQL_USER: ucodrr
-      MYSQL_ROOT_PASSWORD: secret
-      MYSQL_PASSWORD: secret
+      BOOK_URL: https://raw.githubusercontent.com/omarchalito/api-nodejs-libros/master/src/seed/books.csv?raw=true
+      DB_HOST: mongodb://mongo_db:27017/books_db
+      ENV: production
+      PORT: 3000

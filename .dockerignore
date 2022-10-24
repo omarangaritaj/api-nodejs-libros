@@ -1,3 +1,6 @@
 node_modules
 src/migrations/*
-dist
+*.env*
+API-Books.postman_collection.json
+Dockerfile
+README.md
