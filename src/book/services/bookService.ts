@@ -55,12 +55,12 @@ export class BookService extends BaseService<BookDTO> {
     return await BookEntity.create(body)
   }
 
-  async deleteBook(id: string): Promise<object> {
+  async deleteBook(id: string): Promise<any> {
     console.log(id)
     return BookEntity.deleteOne({_id: id});
   }
 
-  async updateBook(id: string, infoUpdate: BookDTO): Promise<object> {
+  async updateBook(id: string, infoUpdate: BookDTO): Promise<any> {
     return BookEntity.updateOne({_id: id}, infoUpdate);
   }
 
