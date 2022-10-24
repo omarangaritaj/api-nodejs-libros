@@ -19,7 +19,7 @@ Para iniciar el servidor deberá proporcionar las variables de entorno con la co
 Ejemplo de `.env`
 
 ```bash
-BOOK_URL=https://raw.githubusercontent.com/omarchalito/api-nodejs-libros/master/src/seed/books.csv?raw=true
+BOOK_URL=https://raw.githubusercontent.com/omarchalito/api-nodejs-libros/master/src/seed/services/books.csv
 DB_HOST=mongodb://user:password@localhost:27017/books_bd
 ENV=develop
 PORT=3000
@@ -121,3 +121,9 @@ curl --location --request DELETE 'http://localhost:3000/api/book/:id'
 ```
 Donde deberá especificarse el `id` del libro que va a eliminar
 
+## Docker Compose
+
+Puede levantar el servicio usando docker con el comando, debe asegurarse que tiene `docker` y `docker compose` instalado en el server
+```bash
+docker-compose up
+```

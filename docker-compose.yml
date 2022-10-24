@@ -13,7 +13,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      BOOK_URL: https://raw.githubusercontent.com/omarchalito/api-nodejs-libros/master/src/seed/books.csv?raw=true
+      BOOK_URL: https://raw.githubusercontent.com/omarchalito/api-nodejs-libros/master/src/seed/services/books.csv
       DB_HOST: mongodb://mongo_db:27017/books_db
       ENV: production
       PORT: 3000
