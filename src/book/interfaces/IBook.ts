@@ -14,5 +14,4 @@ export interface IQuery {
   "Book-Author": string | object
   "Year-Of-Publication": string | object
   "Publisher": string | object
-  $or?: object | object
 }

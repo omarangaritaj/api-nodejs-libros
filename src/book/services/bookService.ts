@@ -40,22 +40,28 @@ export class BookService extends BaseService<BookDTO> {
     return {records, total, pages}
   }
 
-  async createBook(body: BookDTO): Promise<Boolean> {//: Promise<IBook> {
-    // return await BookEntity.create(body)
-    return await true
+  async createBook(body: BookDTO): Promise<IBook | null> {
+    const testBook = <IBook>{
+      page: 1,
+      limit: 2,
+      author: body["Book-Author"],
+      isbn: body["ISBN"],
+      publisher: body["Publisher"],
+      title: body["Book-Title"],
+      year: body["Year-Of-Publication"],
+    }
+    const bookExist = await this.findBookByQuery(testBook)
+    if (bookExist.total > 0) return null
+    return await BookEntity.create(body)
   }
 
-  async deleteBook(id: string): Promise<Boolean> {//: Promise<DeleteResult> {
-    // return (await this.execRepository).delete({id});
-    return await true
+  async deleteBook(id: string): Promise<object> {
+    console.log(id)
+    return BookEntity.deleteOne({_id: id});
   }
 
-  async updateBook(
-    id: string,
-    infoUpdate: BookDTO
-  ): Promise<Boolean> {//: Promise<DeleteResult> {
-    // return (await this.execRepository).delete({id});
-    return await true
+  async updateBook(id: string, infoUpdate: BookDTO): Promise<object> {
+    return BookEntity.updateOne({_id: id}, infoUpdate);
   }
 
 

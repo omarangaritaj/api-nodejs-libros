@@ -40,17 +40,38 @@ export class BookRouter extends BaseRouter<BookController,
     );
 
     this.router.post(
-      "/book/create",
+      "/book",
+      [
+        check("ISBN", "Debe ser una palabra mínimo de 2 carácteres").isString().isByteLength({min: 2}),
+        check("Book-Title", "Debe ser una palabra mínimo de 2 carácteres").isString().isByteLength({min: 2}),
+        check("Book-Author", "Debe ser una palabra mínimo de 2 carácteres").isString().isByteLength({min: 2}),
+        check("Year-Of-Publication", "Debe ser un año válido").isNumeric().isByteLength({min: 4}),
+        check("Publisher", "Debe ser una palabra mínimo de 2 carácteres").isString().isByteLength({min: 2}),
+        check("Image-URL-S", "Debe ser una URL válida").isURL(),
+        check("Image-URL-M", "Debe ser una URL válida").isURL(),
+        check("Image-URL-L", "Debe ser una URL válida").isURL(),
+        this.middleware.bookValidator,
+        this.middleware.errorValidation,
+      ],
       (req: Request, res: Response) => this.controller.createBook(req, res)
     );
 
     this.router.put(
-      "/book/update/:id",
+      "/book/:id",
+      [
+        check('id').isMongoId(),
+        this.middleware.bookValidator,
+        this.middleware.errorValidation,
+      ],
       (req: Request, res: Response) => this.controller.updateBook(req, res)
     );
 
     this.router.delete(
-      "/book/delete/:id",
+      "/book/:id",
+      [
+        check('id').isMongoId(),
+        this.middleware.errorValidation,
+      ],
       (req: Request, res: Response) => this.controller.deleteBook(req, res)
     );
   }
