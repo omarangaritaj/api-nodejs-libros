@@ -41,6 +41,13 @@ Iniciar el servidor (modo producción):
 npm run start
 ```
 
+## Docker Compose
+
+Puede levantar el servicio usando docker con el comando, debe asegurarse que tiene `docker` y `docker compose` instalado en el server
+```bash
+docker-compose up
+```
+
 ### Cargue de los datos semilla
 
 Deberá acceder al endpoint por el verbo GET para cargar la información dentro de la base de datos:
@@ -120,10 +127,3 @@ DELETE _api/book/:id_
 curl --location --request DELETE 'http://localhost:3000/api/book/:id'
 ```
 Donde deberá especificarse el `id` del libro que va a eliminar
-
-## Docker Compose
-
-Puede levantar el servicio usando docker con el comando, debe asegurarse que tiene `docker` y `docker compose` instalado en el server
-```bash
-docker-compose up
-```
