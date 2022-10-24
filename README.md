@@ -51,15 +51,23 @@ _Debido a la cantidad de registros a insertar es posible que tome algo de tiempo
 
 ## Peticiones
 
+Si desea usar la colección de _Postman_ puede hacerlo con el archivo JSON `API-Books.postman_collection.json` que se encuentra en la raíz de este proyecto. 
+
 Para realizar búsquedas se deben hacer peticiones a los enpoints:
 
-_api/book_
+GET _api/book_
 ```bash
 curl --location --request GET 'http://localhost:3000/api/book?limit=20&page=1'
 ```
 Donde deberá especificarse los parámetros de cantidad de registros `limit` (un valor entre 1 y 50) y la página `page` (un valor mayor a cero)
 
-_api/book?{{parámetros}}_
+GET _api/book/:id_
+```bash
+curl --location --request GET 'http://localhost:3000/api/book/:id'
+```
+Donde deberá especificarse el ID del libro que quiere consultar
+
+GET _api/book?{{parámetros}}_
 ```bash
 curl --location --request GET 'http://localhost:3000/api/book/search?limit=20&page=1&author=<any_author>&year=<any_year>&isbn=<any_isbn>&publisher=<any_publisher>'
 ```
@@ -71,4 +79,45 @@ Donde deberá especificarse los parámetros de cantidad de registros `limit` (un
 * publisher
 * title
 * year
+
+POST _api/book_
+```bash
+curl --location --request POST 'http://localhost:3000/api/book' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+  "ISBN": "<any_isbn>",
+  "Book-Title": "<any_title>",
+  "Book-Author": "<any_author>",
+  "Year-Of-Publication": "<any_year>",
+  "Publisher": "<any_publisher>",
+  "Image-URL-S": "<any_url>",
+  "Image-URL-M": "<any_url>",
+  "Image-URL-L": "<any_url>",
+}'
+```
+Donde deberá especificarse dentro del `body` los campos para diligenciar 
+
+PUT _api/book_
+```bash
+curl --location --request PUT 'http://localhost:3000/api/book/6355f11aa55b51f90e6449a7' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+  "ISBN": "<any_isbn>",
+  "Book-Title": "<any_title>",
+  "Book-Author": "<any_author>",
+  "Year-Of-Publication": "<any_year>",
+  "Publisher": "<any_publisher>",
+  "Image-URL-S": "<any_url>",
+  "Image-URL-M": "<any_url>",
+  "Image-URL-L": "<any_url>",
+}'
+```
+Donde deberá especificarse dentro del `body` los campos y el `id` del libro para modificar
+
+
+DELETE _api/book/:id_
+```bash
+curl --location --request DELETE 'http://localhost:3000/api/book/:id'
+```
+Donde deberá especificarse el `id` del libro que va a eliminar
 
