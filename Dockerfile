@@ -12,10 +12,10 @@ RUN npm install
 
 ENV NODE_ENV=production
 
-RUN npm run m:gen -- src/migrations/InitDB
+RUN tsc
 
-RUN npm run m:run
+RUN rm -rf ./src
 
-EXPOSE 8000
+EXPOSE 3000
 
 CMD ["npm","start"]
