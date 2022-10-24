@@ -121,3 +121,9 @@ curl --location --request DELETE 'http://localhost:3000/api/book/:id'
 ```
 Donde deberá especificarse el `id` del libro que va a eliminar
 
+## Docker Compose
+
+Puede levantar el servicio usando docker con el comando, debe asegurarse que tiene `docker` y `docker compose` instalado en el server
+```bash
+docker-compose up
+```
